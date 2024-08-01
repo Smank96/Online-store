@@ -7,4 +7,10 @@ def home(request):
 
 
 def contacts(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone_number = request.POST.get('phone_number')
+        message = request.POST.get('message')
+        print(f'Имя: {name}, Телефонный номер: {phone_number}\nСообщение: {message}')
     return render(request, 'contacts.html')
+
