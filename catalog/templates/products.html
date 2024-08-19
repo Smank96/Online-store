@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load my_tags %}
+{% block content %}
+{% for product in products %}
+<div class="col-4">
+    <div class="card mb-4 box-shadow">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ product.product_name }}</h4>
+        </div>
+        <div class="card-image">
+            <img class="img-same-size" src="{{ product.product_picture | media_filter }}">
+        </div>
+        <div class="card-body">
+            <h1 class="card-title pricing-card-title">{{ product.price }} ₽</h1>
+            <p>{{ product.product_description }}</p>
+            <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+               href="{% url 'catalog:product_details' product.pk %}">Купить</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% include 'includes/inc_paginator.html' %}
+{% endblock %}
