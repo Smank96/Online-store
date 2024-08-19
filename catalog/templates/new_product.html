@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4 mb-3">
+                <label for="product_name" class="form-label">Название продукта</label>
+                <input type="text" name="product_name" class="form-control" id="product_name">
+
+                <label for="product_description" class="form-label">Описание продукта</label>
+                <input type="text" name="product_description" class="form-control" id="product_description">
+
+                <label for="category" class="form-label">Категория</label>
+                <select class="form-select" name="category" id="category" aria-label="Default select example">
+                    <option selected>Выберите категорию товара</option>
+                    <option value="">Одежда</option>
+                    <option value="">Обувь</option>
+                </select>
+
+                <label for="price" class="form-label">Цена</label>
+                <input class="form-control" name="price" id="price">
+            </div>
+            <div class="col-4 mb-3">
+                <label for="product_picture" class="form-label">Фото товара</label>
+                <input class="form-control" type="file" name="product_picture" id="product_picture">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </div>
+</form>
+{% endblock %}

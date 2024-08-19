@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions import Now
 
 
 class Category(models.Model):
@@ -19,8 +20,8 @@ class Product(models.Model):
     product_picture = models.ImageField(upload_to='products_images', blank=True, null=True, verbose_name='Фото')
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE, verbose_name='Категория товара')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
-    created_at = models.DateTimeField(verbose_name='Дата создания')
-    updated_at = models.DateTimeField(verbose_name='Дата изменения')
+    created_at = models.DateTimeField(verbose_name='Дата создания', db_default=Now())
+    updated_at = models.DateTimeField(verbose_name='Дата изменения', db_default=Now())
 
     class Meta:
         verbose_name = 'Товары'
