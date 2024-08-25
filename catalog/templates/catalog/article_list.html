@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+<a type="button" class="btn btn-lg btn-block btn-outline-primary"
+   href="{% url 'catalog:article_create' %}">Создать статью</a>
+{% for article in object_list %}
+{% if article.is_published %}
+<div class="col-4">
+    <div class="card mb-4 box-shadow">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">{{ article.title }}</h4>
+        </div>
+        <div class="card-image">
+            <img class="img-same-size" src="{{ article.preview | media_filter }}">
+        </div>
+        <div class="card-body">
+            <p>{{ article.body | truncatechars:200 }}</p>
+            <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+               href="{{ article.get_absolute_url }}">Посмотреть</a>
+            <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+               href="{% url 'catalog:article_update' article.pk %}">Изменить</a>
+            <a type="button" class="btn btn-lg btn-block btn-outline-primary"
+               href="{% url 'catalog:article_delete' article.pk %}">Удалить</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}
