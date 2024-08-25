@@ -1,47 +1,84 @@
-from django.shortcuts import render, get_object_or_404
-from catalog.models import Contacts, Product
+from django.urls import reverse_lazy, reverse
+from django.utils.text import slugify
+from catalog.models import Contacts, Product, Category, Article
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 
 
-def products(request, page_number=1):
-    products_set = Product.objects.all()
-
-    per_page = 6
-    paginator = Paginator(products_set, per_page)
-    products_paginator = paginator.page(page_number)
-
-    context = {"products": products_paginator}
-    return render(request, 'products.html', context)
+class ProductListView(ListView):
+    model = Product
+    paginate_by = 6
 
 
-def product_details(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {"product": product}
-    return render(request, 'product_details.html', context)
+class ContactsListView(ListView):
+    model = Contacts
 
 
-def contacts(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        phone_number = request.POST.get('phone_number')
-        message = request.POST.get('message')
-        print(f'Имя: {name}, Телефонный номер: {phone_number}\nСообщение: {message}')
-
-        Contacts.objects.create(name=name, phone_number=phone_number, message=message)
-    return render(request, 'contacts.html')
+class ContactCreateView(CreateView):
+    model = Contacts
+    success_url = reverse_lazy('catalog:home')
 
 
-def new_product(request):
-    if request.method == 'POST':
-        product_name = request.POST.get('product_name')
-        product_description = request.POST.get('product_description')
-        product_picture = request.POST.get('product_picture')
-        category = request.POST.get('category')
-        price = request.POST.get('price')
+class ProductDetailView(DetailView):
+    model = Product
 
-        Product.objects.create(product_name=product_name,
-                               product_description=product_description,
-                               product_picture=product_picture,
-                               category=category,
-                               price=price)
-    return render(request, 'new_product.html')
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views_counter += 1
+        self.object.save()
+        return self.object
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ("product_name", "product_description", "product_picture", "category", "price")
+    success_url = reverse_lazy('catalog:home')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ("product_name", "product_description", "product_picture", "category", "price")
+    success_url = reverse_lazy('catalog:home')
+
+    def get_success_url(self):
+        return reverse('catalog:product_detail', args=[self.kwargs.get('pk')])
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:home')
+
+
+class ArticleListView(ListView):
+    model = Article
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        self.object.views_counter += 1
+        self.object.save()
+        return self.object
+
+
+class ArticleCreateView(CreateView):
+    model = Article
+    fields = ("title", "body", "preview", "is_published")
+    success_url = reverse_lazy('catalog:article_detail')
+
+    def get_success_url(self):
+        return reverse('catalog:article_detail', args=[self.object.slug])
+
+
+class ArticleUpdateView(UpdateView):
+    model = Article
+
+    fields = ("title", "slug", "body", "preview", "is_published")
+    success_url = reverse_lazy('catalog:article_list')
+
+
+class ArticleDeleteView(DeleteView):
+    model = Article
+    success_url = reverse_lazy('catalog:article_list')
