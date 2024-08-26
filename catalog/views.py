@@ -71,6 +71,14 @@ class ArticleCreateView(CreateView):
     def get_success_url(self):
         return reverse('catalog:article_detail', args=[self.object.slug])
 
+    def form_valid(self, form):
+        if form.is_valid():
+            new_article = form.save()
+            new_article.slug = slugify(new_article.title)
+            new_article.save()
+
+        return super().form_valid(form)
+
 
 class ArticleUpdateView(UpdateView):
     model = Article
