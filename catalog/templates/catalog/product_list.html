@@ -20,6 +20,11 @@
             <a type="button" class="btn btn-lg btn-block btn-outline-primary"
                href="{% url 'catalog:products_delete' product.pk %}">Удалить</a>
         </div>
+        <div class="card-footer">
+            {% if product.active_version %}
+            <p>{{ product.active_version }}</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endfor %}
