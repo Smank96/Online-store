@@ -1,10 +1,15 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-6">
-            <form class="row" method="post" enctype="multipart/form-data">
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-6">
                 <div class="card">
+                    {% if object %}
+                    <h3 class="card-text">Редактирование товара </h3>
+                    {% else %}
+                    <h3 class="card-text">Создание нового товара</h3>
+                    {% endif %}
                     <div class="card-body">
                         {% csrf_token %}
                         {{ form.as_p }}
@@ -17,8 +22,19 @@
                         {% endif %}
                     </button>
                 </div>
-            </form>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <h3 class="card-text">Версия товара</h3>
+                    <div class="card-body">
+                        {{ formset.management_form }}
+                        {% for form in formset.forms %}
+                        {{ form.as_p }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
 {% endblock %}
