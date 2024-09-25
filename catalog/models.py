@@ -62,3 +62,17 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalog:article_detail', kwargs={'slug': self.slug})
+
+
+class Version(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, verbose_name='Продукт', null=True, blank=True)
+    version_number = models.PositiveIntegerField(verbose_name='Номер версии')
+    version_name = models.CharField(max_length=100, verbose_name='Название версии')
+    is_active = models.BooleanField(default=False, verbose_name='Признак текущей версии')
+
+    class Meta:
+        verbose_name = 'Версия товара'
+        verbose_name_plural = 'Версии товаров'
+
+    def __str__(self):
+        return f"Версия: {self.version_number} - {self.version_name}"
