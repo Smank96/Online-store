@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.db import models
-from django.db.models.functions import Now
 from django.urls import reverse
 from django.utils.text import slugify
+
+from users.models import User
 
 
 class Category(models.Model):
@@ -22,9 +25,10 @@ class Product(models.Model):
     product_picture = models.ImageField(upload_to='products_images', blank=True, null=True, verbose_name='Фото')
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE, verbose_name='Категория товара')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
-    created_at = models.DateTimeField(verbose_name='Дата создания', db_default=Now())
-    updated_at = models.DateTimeField(verbose_name='Дата изменения', db_default=Now())
+    created_at = models.DateTimeField(verbose_name='Дата создания', default=datetime.now)
+    updated_at = models.DateTimeField(verbose_name='Дата изменения', default=datetime.now)
     views_counter = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
+    owner = models.ForeignKey(User, verbose_name="Создатель", blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Товары'
@@ -49,7 +53,7 @@ class Article(models.Model):
     slug = models.SlugField(null=False, unique=True)
     body = models.TextField(verbose_name='Содержимое')
     preview = models.ImageField(upload_to='blog', null=True, blank=True, verbose_name='Изображение')
-    created_at = models.DateTimeField(verbose_name='Дата создания', db_default=Now())
+    created_at = models.DateTimeField(verbose_name='Дата создания', default=datetime.now)
     is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
     views_counter = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
 
